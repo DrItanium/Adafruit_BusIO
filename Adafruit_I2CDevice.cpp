@@ -8,16 +8,7 @@
  *    @param  addr The 7-bit I2C address for the device
  *    @param  theWire The I2C bus to use, defaults to &Wire
  */
-Adafruit_I2CDevice::Adafruit_I2CDevice(uint8_t addr, TwoWire *theWire) {
-  _addr = addr;
-  _wire = theWire;
-  _begun = false;
-#ifdef ARDUINO_ARCH_SAMD
-  _maxBufferSize = 250; // as defined in Wire.h's RingBuffer
-#else
-  _maxBufferSize = 32;
-#endif
-}
+Adafruit_I2CDevice::Adafruit_I2CDevice(uint8_t addr, TwoWire *theWire) : _addr(addr), _wire(theWire) { }
 
 /*!
  *    @brief  Initializes and does basic address detection
@@ -41,7 +32,7 @@ bool Adafruit_I2CDevice::begin(bool addr_detect) {
  *    if there's no pullups on I2C
  *    @return True if I2C initialized and a device with the addr found
  */
-bool Adafruit_I2CDevice::detected(void) {
+bool Adafruit_I2CDevice::detected() {
   // Init I2C if not done yet
   if (!_begun && !begin()) {
     return false;
@@ -212,12 +203,6 @@ bool Adafruit_I2CDevice::write_then_read(const uint8_t *write_buffer,
 
   return read(read_buffer, read_len);
 }
-
-/*!
- *    @brief  Returns the 7-bit address of this device
- *    @return The 7-bit address of this device
- */
-uint8_t Adafruit_I2CDevice::address(void) { return _addr; }
 
 /*!
  *    @brief  Change the I2C clock speed to desired (relies on

@@ -7,13 +7,17 @@
 class Adafruit_I2CDevice {
 public:
   Adafruit_I2CDevice(uint8_t addr, TwoWire *theWire = &Wire);
-  uint8_t address(void);
+  /*!
+   *    @brief  Returns the 7-bit address of this device
+   *    @return The 7-bit address of this device
+   */
+  uint8_t address() const noexcept { return _addr; }
   bool begin(bool addr_detect = true);
-  bool detected(void);
+  bool detected();
 
   bool read(uint8_t *buffer, size_t len, bool stop = true);
   bool write(const uint8_t *buffer, size_t len, bool stop = true,
-             const uint8_t *prefix_buffer = NULL, size_t prefix_len = 0);
+             const uint8_t *prefix_buffer = nullptr, size_t prefix_len = 0);
   bool write_then_read(const uint8_t *write_buffer, size_t write_len,
                        uint8_t *read_buffer, size_t read_len,
                        bool stop = false);
@@ -26,8 +30,16 @@ public:
 private:
   uint8_t _addr;
   TwoWire *_wire;
-  bool _begun;
-  size_t _maxBufferSize;
+  bool _begun = false;
+  // use NSDMI
+#ifdef ARDUINO_ARCH_SAMD
+#define ADAFRUIT_I2CDEVICE_MAX_BUFFER_SIZE 250 // as defined in Wire.h's RingBuffer
+#else
+#define ADAFRUIT_I2CDEVICE_MAX_BUFFER_SIZE 32
+#endif
+  size_t _maxBufferSize = ADAFRUIT_I2CDEVICE_MAX_BUFFER_SIZE;
+#undef ADAFRUIT_I2CDEVICE_MAX_BUFFER_SIZE
+
 };
 
 #endif // Adafruit_I2CDevice_h
