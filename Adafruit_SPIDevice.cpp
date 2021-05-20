@@ -41,15 +41,27 @@ Adafruit_SPIDevice::Adafruit_SPIDevice(int8_t cspin, uint32_t freq,
 Adafruit_SPIDevice::Adafruit_SPIDevice(int8_t cspin, int8_t sckpin,
                                        int8_t misopin, int8_t mosipin,
                                        uint32_t freq, BitOrder dataOrder,
-                                       uint8_t dataMode) {
-  _cs = cspin;
-  _sck = sckpin;
-  _miso = misopin;
-  _mosi = mosipin;
+                                       uint8_t dataMode) :
+    _spiSetting(new SPISettings(freq, dataOrder, dataMode)),
+    _freq(freq),
+    _dataOrder(dataOrder),
+    _dataMode(dataMode),
+    _cs(cspin),
+    _sck(sckpin),
+    _miso(misopin),
+    _mosi(mosipin)
+#ifdef BUSIO_USE_FAST_PINIO
+    ,
+  clkPort((BusIO_PortReg *)portOutputRegister(digitalPinToPort(sckpin))),
+  clkPinMask(digitalPinToBitMask(sckpin)),
+  csPort((BusIO_PortReg *)portOutputRegister(digitalPinToPort(cspin))),
+  csPinMask(digitalPinToBitMask(cspin))
+#endif
+{
 
 #ifdef BUSIO_USE_FAST_PINIO
-  csPort = (BusIO_PortReg *)portOutputRegister(digitalPinToPort(cspin));
-  csPinMask = digitalPinToBitMask(cspin);
+    // could use terniary operator to add these statements to the initializer
+    // list
   if (mosipin != -1) {
     mosiPort = (BusIO_PortReg *)portOutputRegister(digitalPinToPort(mosipin));
     mosiPinMask = digitalPinToBitMask(mosipin);
@@ -58,14 +70,8 @@ Adafruit_SPIDevice::Adafruit_SPIDevice(int8_t cspin, int8_t sckpin,
     misoPort = (BusIO_PortReg *)portInputRegister(digitalPinToPort(misopin));
     misoPinMask = digitalPinToBitMask(misopin);
   }
-  clkPort = (BusIO_PortReg *)portOutputRegister(digitalPinToPort(sckpin));
-  clkPinMask = digitalPinToBitMask(sckpin);
 #endif
 
-  _freq = freq;
-  _dataOrder = dataOrder;
-  _dataMode = dataMode;
-  _spiSetting = new SPISettings(freq, dataOrder, dataMode);
 }
 
 /*!
@@ -83,7 +89,7 @@ Adafruit_SPIDevice::~Adafruit_SPIDevice() {
  *    @return Always returns true because there's no way to test success of SPI
  * init
  */
-bool Adafruit_SPIDevice::begin(void) {
+bool Adafruit_SPIDevice::begin() {
   pinMode(_cs, OUTPUT);
   digitalWrite(_cs, HIGH);
 
@@ -122,7 +128,7 @@ void Adafruit_SPIDevice::transfer(uint8_t *buffer, size_t len) {
     // hardware SPI is easy
 
 #if defined(SPARK)
-    _spi->transfer(buffer, buffer, len, NULL);
+    _spi->transfer(buffer, buffer, len, nullptr);
 #elif defined(STM32)
     for (size_t i = 0; i < len; i++) {
       _spi->transfer(buffer[i]);
@@ -264,7 +270,7 @@ uint8_t Adafruit_SPIDevice::transfer(uint8_t send) {
  *    @brief  Manually begin a transaction (calls beginTransaction if hardware
  * SPI)
  */
-void Adafruit_SPIDevice::beginTransaction(void) {
+void Adafruit_SPIDevice::beginTransaction() {
   if (_spi) {
     _spi->beginTransaction(*_spiSetting);
   }
@@ -273,7 +279,7 @@ void Adafruit_SPIDevice::beginTransaction(void) {
 /*!
  *    @brief  Manually end a transaction (calls endTransaction if hardware SPI)
  */
-void Adafruit_SPIDevice::endTransaction(void) {
+void Adafruit_SPIDevice::endTransaction() {
   if (_spi) {
     _spi->endTransaction();
   }
