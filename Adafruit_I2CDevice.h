@@ -11,7 +11,7 @@ public:
    *    @brief  Returns the 7-bit address of this device
    *    @return The 7-bit address of this device
    */
-  uint8_t address() const noexcept { return _addr; }
+  constexpr uint8_t address() const noexcept { return _addr; }
   bool begin(bool addr_detect = true);
   bool detected();
 
@@ -25,7 +25,7 @@ public:
 
   /*!   @brief  How many bytes we can read in a transaction
    *    @return The size of the Wire receive/transmit buffer */
-  size_t maxBufferSize() const noexcept { return _maxBufferSize; }
+  constexpr size_t maxBufferSize() const noexcept { return _maxBufferSize; }
 
 private:
   uint8_t _addr;
