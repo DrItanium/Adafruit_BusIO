@@ -25,19 +25,19 @@ public:
 
   /*!   @brief  How many bytes we can read in a transaction
    *    @return The size of the Wire receive/transmit buffer */
-  size_t maxBufferSize() { return _maxBufferSize; }
+  size_t maxBufferSize() const noexcept { return _maxBufferSize; }
 
 private:
   uint8_t _addr;
   TwoWire *_wire;
   bool _begun = false;
-  // use NSDMI
 #ifdef ARDUINO_ARCH_SAMD
 #define ADAFRUIT_I2CDEVICE_MAX_BUFFER_SIZE 250 // as defined in Wire.h's RingBuffer
 #else
 #define ADAFRUIT_I2CDEVICE_MAX_BUFFER_SIZE 32
 #endif
-  size_t _maxBufferSize = ADAFRUIT_I2CDEVICE_MAX_BUFFER_SIZE;
+  // tell the compiler that this value will _never_ change at runtime
+  static constexpr size_t _maxBufferSize = ADAFRUIT_I2CDEVICE_MAX_BUFFER_SIZE;
 #undef ADAFRUIT_I2CDEVICE_MAX_BUFFER_SIZE
 
 };
