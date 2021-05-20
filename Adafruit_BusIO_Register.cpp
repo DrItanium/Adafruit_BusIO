@@ -16,13 +16,13 @@ Adafruit_BusIO_Register::Adafruit_BusIO_Register(Adafruit_I2CDevice *i2cdevice,
                                                  uint16_t reg_addr,
                                                  uint8_t width,
                                                  uint8_t byteorder,
-                                                 uint8_t address_width) {
-  _i2cdevice = i2cdevice;
-  _spidevice = NULL;
-  _addrwidth = address_width;
-  _address = reg_addr;
-  _byteorder = byteorder;
-  _width = width;
+                                                 uint8_t address_width) :
+    _i2cdevice(i2cdevice),
+    _addrwidth(address_width),
+    _address(reg_addr),
+    _byteorder(byteorder),
+    _width(width)
+{
 }
 
 /*!
@@ -44,14 +44,14 @@ Adafruit_BusIO_Register::Adafruit_BusIO_Register(Adafruit_SPIDevice *spidevice,
                                                  Adafruit_BusIO_SPIRegType type,
                                                  uint8_t width,
                                                  uint8_t byteorder,
-                                                 uint8_t address_width) {
-  _spidevice = spidevice;
-  _spiregtype = type;
-  _i2cdevice = NULL;
-  _addrwidth = address_width;
-  _address = reg_addr;
-  _byteorder = byteorder;
-  _width = width;
+                                                 uint8_t address_width) :
+    _spidevice(spidevice),
+    _spiregtype(type),
+    _addrwidth(address_width),
+    _address(reg_addr),
+    _byteorder(byteorder),
+    _width(width)
+{
 }
 
 /*!
@@ -75,14 +75,16 @@ Adafruit_BusIO_Register::Adafruit_BusIO_Register(Adafruit_SPIDevice *spidevice,
 Adafruit_BusIO_Register::Adafruit_BusIO_Register(
     Adafruit_I2CDevice *i2cdevice, Adafruit_SPIDevice *spidevice,
     Adafruit_BusIO_SPIRegType type, uint16_t reg_addr, uint8_t width,
-    uint8_t byteorder, uint8_t address_width) {
-  _spidevice = spidevice;
-  _i2cdevice = i2cdevice;
-  _spiregtype = type;
-  _addrwidth = address_width;
-  _address = reg_addr;
-  _byteorder = byteorder;
-  _width = width;
+    uint8_t byteorder, 
+    uint8_t address_width) :
+        _spidevice(spidevice),
+        _i2cdevice(i2cdevice),
+        _spiregtype(type),
+        _addrwidth(address_width),
+        _address(reg_addr),
+        _byteorder(byteorder),
+        _width(width)
+{
 }
 
 /*!
@@ -168,12 +170,6 @@ uint32_t Adafruit_BusIO_Register::read(void) {
 
   return value;
 }
-
-/*!
- *    @brief  Read cached data from last time we wrote to this register
- *    @return Returns 0xFFFFFFFF on failure, value otherwise
- */
-uint32_t Adafruit_BusIO_Register::readCached(void) { return _cached; }
 
 /*!
  *    @brief  Read a buffer of data from the register location
@@ -269,10 +265,10 @@ void Adafruit_BusIO_Register::println(Stream *s) {
  *    @param  shift The number of bits that our bit-slice is shifted from LSB
  */
 Adafruit_BusIO_RegisterBits::Adafruit_BusIO_RegisterBits(
-    Adafruit_BusIO_Register *reg, uint8_t bits, uint8_t shift) {
-  _register = reg;
-  _bits = bits;
-  _shift = shift;
+    Adafruit_BusIO_Register *reg, uint8_t bits, uint8_t shift) : 
+    _register(reg), 
+    _bits(bits), 
+    _shift(shift) {
 }
 
 /*!
@@ -304,9 +300,3 @@ bool Adafruit_BusIO_RegisterBits::write(uint32_t data) {
 
   return _register->write(val, _register->width());
 }
-
-/*!
- *    @brief  The width of the register data, helpful for doing calculations
- *    @returns The data width used when initializing the register
- */
-uint8_t Adafruit_BusIO_Register::width(void) { return _width; }

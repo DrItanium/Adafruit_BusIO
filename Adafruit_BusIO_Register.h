@@ -1,11 +1,11 @@
+#ifndef Adafruit_BusIO_Register_h
+#define Adafruit_BusIO_Register_h
 #include <Adafruit_I2CDevice.h>
 #include <Adafruit_SPIDevice.h>
 #include <Arduino.h>
 
-#ifndef Adafruit_BusIO_Register_h
-#define Adafruit_BusIO_Register_h
 
-typedef enum _Adafruit_BusIO_SPIRegType {
+enum Adafruit_BusIO_SPIRegType {
   ADDRBIT8_HIGH_TOREAD = 0,
   /*!<
    * ADDRBIT8_HIGH_TOREAD
@@ -22,7 +22,7 @@ typedef enum _Adafruit_BusIO_SPIRegType {
    * the register address to the device. e.g. To write to the register 0x19 the
    * register value 0x99 is sent and to read 0x19 is sent.
    */
-} Adafruit_BusIO_SPIRegType;
+};
 
 /*!
  * @brief The class which defines a device register (a location to read/write
@@ -47,19 +47,27 @@ public:
   bool read(uint8_t *buffer, uint8_t len);
   bool read(uint8_t *value);
   bool read(uint16_t *value);
-  uint32_t read(void);
-  uint32_t readCached(void);
+  uint32_t read();
+/*!
+ *    @brief  Read cached data from last time we wrote to this register
+ *    @return Returns 0xFFFFFFFF on failure, value otherwise
+ */
+  uint32_t readCached() const noexcept { return _cached; }
   bool write(uint8_t *buffer, uint8_t len);
   bool write(uint32_t value, uint8_t numbytes = 0);
 
-  uint8_t width(void);
+/*!
+ *    @brief  The width of the register data, helpful for doing calculations
+ *    @returns The data width used when initializing the register
+ */
+  uint8_t width() const noexcept { return _width; }
 
   void print(Stream *s = &Serial);
   void println(Stream *s = &Serial);
 
 private:
-  Adafruit_I2CDevice *_i2cdevice;
-  Adafruit_SPIDevice *_spidevice;
+  Adafruit_I2CDevice *_i2cdevice = nullptr;
+  Adafruit_SPIDevice *_spidevice = nullptr;
   Adafruit_BusIO_SPIRegType _spiregtype;
   uint16_t _address;
   uint8_t _width, _addrwidth, _byteorder;
@@ -77,7 +85,7 @@ public:
   Adafruit_BusIO_RegisterBits(Adafruit_BusIO_Register *reg, uint8_t bits,
                               uint8_t shift);
   bool write(uint32_t value);
-  uint32_t read(void);
+  uint32_t read();
 
 private:
   Adafruit_BusIO_Register *_register;
