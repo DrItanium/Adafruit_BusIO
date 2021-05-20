@@ -21,7 +21,6 @@ Adafruit_SPIDevice::Adafruit_SPIDevice(int8_t cspin, uint32_t freq,
     _dataOrder(dataOrder),
     _dataMode(dataMode),
     _cs(cspin)
-
 {
 }
 

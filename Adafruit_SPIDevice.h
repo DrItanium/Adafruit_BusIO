@@ -83,7 +83,7 @@ public:
   void endTransaction();
 
 private:
-  SPIClass *_spi = nullptr;
+  SPIClass *_spi;
   SPISettings *_spiSetting;
   uint32_t _freq;
   BitOrder _dataOrder;
@@ -94,10 +94,7 @@ private:
   int8_t _mosi = -1;
   int8_t _miso = -1;
 #ifdef BUSIO_USE_FAST_PINIO
-  BusIO_PortReg *mosiPort = nullptr;
-  BusIO_PortReg *clkPort = nullptr;
-  BusIO_PortReg *misoPort = nullptr;
-  BusIO_PortReg *csPort = nullptr;
+  BusIO_PortReg *mosiPort, *clkPort, *misoPort, *csPort;
   BusIO_PortMask mosiPinMask, misoPinMask, clkPinMask, csPinMask;
 #endif
   bool _begun = false;
