@@ -68,7 +68,7 @@ public:
                      uint8_t dataMode = SPI_MODE0);
   ~Adafruit_SPIDevice();
 
-  bool begin(void);
+  bool begin();
   bool read(uint8_t *buffer, size_t len, uint8_t sendvalue = 0xFF);
   bool write(uint8_t *buffer, size_t len, uint8_t *prefix_buffer = NULL,
              size_t prefix_len = 0);
@@ -78,22 +78,25 @@ public:
 
   uint8_t transfer(uint8_t send);
   void transfer(uint8_t *buffer, size_t len);
-  void beginTransaction(void);
-  void endTransaction(void);
+  void beginTransaction();
+  void endTransaction();
 
 private:
-  SPIClass *_spi;
+  SPIClass *_spi = nullptr;
   SPISettings *_spiSetting;
   uint32_t _freq;
   BitOrder _dataOrder;
   uint8_t _dataMode;
 
-  int8_t _cs, _sck, _mosi, _miso;
+  int8_t _cs;
+  int8_t _sck = -1;
+  int8_t _mosi = -1;
+  int8_t _miso = -1;
 #ifdef BUSIO_USE_FAST_PINIO
   BusIO_PortReg *mosiPort, *clkPort, *misoPort, *csPort;
   BusIO_PortMask mosiPinMask, misoPinMask, clkPinMask, csPinMask;
 #endif
-  bool _begun;
+  bool _begun = false;
 };
 
 #endif // Adafruit_SPIDevice_h
