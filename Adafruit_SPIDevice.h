@@ -1,7 +1,8 @@
-#include <SPI.h>
-
 #ifndef Adafruit_SPIDevice_h
 #define Adafruit_SPIDevice_h
+
+#include <SPI.h>
+
 
 // some modern SPI definitions don't have BitOrder enum
 #if (defined(__AVR__) && !defined(ARDUINO_ARCH_MEGAAVR)) ||                    \
