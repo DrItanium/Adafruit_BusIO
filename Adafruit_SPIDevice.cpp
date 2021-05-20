@@ -14,13 +14,15 @@
  */
 Adafruit_SPIDevice::Adafruit_SPIDevice(int8_t cspin, uint32_t freq,
                                        BitOrder dataOrder, uint8_t dataMode,
-                                       SPIClass *theSPI) {
-  _cs = cspin;
-  _spi = theSPI;
-  _spiSetting = new SPISettings(freq, dataOrder, dataMode);
-  _freq = freq;
-  _dataOrder = dataOrder;
-  _dataMode = dataMode;
+                                       SPIClass *theSPI) : 
+    _spi(theSPI),
+    _spiSetting(new SPISettings(freq, dataOrder, dataMode)),
+    _freq(freq),
+    _dataOrder(dataOrder),
+    _dataMode(dataMode),
+    _cs(cspin)
+
+{
 }
 
 /*!
