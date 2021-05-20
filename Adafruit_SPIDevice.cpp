@@ -316,7 +316,7 @@ bool Adafruit_SPIDevice::write(uint8_t *buffer, size_t len,
 
 #ifdef DEBUG_SERIAL
   DEBUG_SERIAL.print(F("\tSPIDevice Wrote: "));
-  if ((prefix_len != 0) && (prefix_buffer != NULL)) {
+  if ((prefix_len != 0) && (prefix_buffer != nullptr)) {
     for (uint16_t i = 0; i < prefix_len; i++) {
       DEBUG_SERIAL.print(F("0x"));
       DEBUG_SERIAL.print(prefix_buffer[i], HEX);

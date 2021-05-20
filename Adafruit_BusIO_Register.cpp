@@ -56,11 +56,11 @@ Adafruit_BusIO_Register::Adafruit_BusIO_Register(Adafruit_SPIDevice *spidevice,
 
 /*!
  *    @brief  Create a register we access over an I2C or SPI Device. This is a
- * handy function because we can pass in NULL for the unused interface, allowing
+ * handy function because we can pass in nullptr for the unused interface, allowing
  * libraries to mass-define all the registers
- *    @param  i2cdevice The I2CDevice to use for underlying I2C access, if NULL
+ *    @param  i2cdevice The I2CDevice to use for underlying I2C access, if nullptr
  * we use SPI
- *    @param  spidevice The SPIDevice to use for underlying SPI access, if NULL
+ *    @param  spidevice The SPIDevice to use for underlying SPI access, if nullptr
  * we use I2C
  *    @param  reg_addr The address pointer value for the I2C/SMBus/SPI register,
  * can be 8 or 16 bits
